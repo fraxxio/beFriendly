@@ -1,11 +1,12 @@
 import Footer from './components/Footer';
+import MainMenu from './components/MainMenu';
 import Navbar from './components/Navbar';
 
 function App() {
   return (
-    <main className='text-center text-3xl flex flex-col justify-between h-[100vh]'>
+    <main className='flex flex-col justify-between h-[100vh]'>
       <Navbar />
-      <h1>Hello</h1>
+      <MainMenu />
       <Footer />
     </main>
   );
