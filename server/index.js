@@ -10,13 +10,13 @@ import {
   getUser,
   pairAndJoinUsers,
   getRandomUsers,
+  ADMIN,
 } from './utils.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const PORT = process.env.PORT || 3500;
-const ADMIN = 'Admin';
 
 const app = express();
 
@@ -41,8 +41,6 @@ const io = new Server(expressServer, {
 io.on('connection', (socket) => {
   console.log(`User ${socket.id} connected`);
   activeUserCount++;
-  // Upon connection - only to user
-  socket.emit('message', buildMsg(ADMIN, 'Welcome to Chat App!'));
 
   socket.on('looking', (name, callback) => {
     if (!name) {
@@ -65,11 +63,12 @@ io.on('connection', (socket) => {
       if (user?.room !== 'Unknown') {
         clearInterval(intervalId);
         callback('success');
+        socket.emit('message', buildMsg(ADMIN, 'You can chat now, say hi!'));
       }
     }, 5000);
   });
 
-  // When user disconnects - to all others
+  // When user disconnects to other user
   socket.on('disconnect', () => {
     const user = getUser(socket.id);
     userLeavesApp(socket.id);

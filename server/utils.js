@@ -1,3 +1,5 @@
+export const ADMIN = 'Admin';
+
 const UsersState = {
   users: [],
   setUsers: function (newUsersArray) {

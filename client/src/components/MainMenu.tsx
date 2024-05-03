@@ -1,14 +1,16 @@
 import { Dispatch, FormEvent, useEffect, useState } from 'react';
-import { socket } from '../lib/socket';
 import { Search, User } from 'lucide-react';
+import { Socket } from 'socket.io-client';
 
-export default function MainMenu({
-  setIsPaired,
-}: {
+type MainMenuProps = {
   setIsPaired: Dispatch<React.SetStateAction<boolean>>;
-}) {
+  socket: Socket;
+  username: string;
+  setUsername: Dispatch<React.SetStateAction<string>>;
+};
+
+export default function MainMenu({ setIsPaired, socket, username, setUsername }: MainMenuProps) {
   const [userCount, setUserCount] = useState(0);
-  const [username, setUsername] = useState('');
   const [loading, setLoading] = useState(false);
 
   function hSubmit(e: FormEvent<HTMLFormElement>) {
@@ -20,21 +22,12 @@ export default function MainMenu({
   }
 
   useEffect(() => {
-    socket.connect();
-
     socket.on('activeUsers', ({ users }: { users: number }) => {
       setUserCount(users);
     });
 
-    // if (loading) {
-    //   socket.emit('looking', username, (response: string) => {
-    //     setIsPaired(response === 'success' ? true : false);
-    //   });
-    // }
-
     return () => {
       socket.off('activeUsers');
-      socket.disconnect();
     };
   }, []);
 
