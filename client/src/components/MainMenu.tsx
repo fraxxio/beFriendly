@@ -12,9 +12,13 @@ type MainMenuProps = {
 export default function MainMenu({ setIsPaired, socket, username, setUsername }: MainMenuProps) {
   const [userCount, setUserCount] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
 
   function hSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setError(username.toLocaleLowerCase() === 'admin' ? true : false);
+    if (username.toLocaleLowerCase() === 'admin') return;
+
     setLoading(true);
     socket.emit('looking', username, (response: string) => {
       setIsPaired(response === 'success' ? true : false);
@@ -52,6 +56,7 @@ export default function MainMenu({ setIsPaired, socket, username, setUsername }:
             onChange={(e: FormEvent<HTMLInputElement>) => setUsername(e.currentTarget.value)}
             className='py-2 pl-2 border-2 border-secondary rounded placeholder:text-gray-600 duration-200 focus:outline-primary'
           />
+          {error && <p className='text-red-700 text-sm'>This username is not allowed.</p>}
           <button
             type='submit'
             disabled={loading}

@@ -43,7 +43,7 @@ io.on('connection', (socket) => {
   activeUserCount++;
 
   socket.on('looking', (name, callback) => {
-    if (!name) {
+    if (!name || name === 'Admin') {
       callback('fail');
     }
     activateUser(socket.id, name, 'Unknown');
