@@ -1,6 +1,8 @@
 import express from 'express';
 import { Server } from 'socket.io';
 import path from 'path';
+import cors from 'cors';
+import { getRandomQuestions } from './questions.js';
 import { fileURLToPath } from 'url';
 import {
   buildMsg,
@@ -21,6 +23,23 @@ const PORT = process.env.PORT || 3500;
 const app = express();
 
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(
+  cors({
+    origin: 'http://localhost:5173',
+  })
+);
+
+app.get('/api/questions', (req, res) => {
+  console.log('call');
+  try {
+    const questions = getRandomQuestions();
+    res.json(questions);
+  } catch (error) {
+    console.error('Error fetching questions:', error);
+    res.status(500).json({ error: 'Failed to fetch questions' });
+  }
+});
 
 const expressServer = app.listen(PORT, () => {
   console.log(`Listening on port ${PORT}`);
@@ -63,7 +82,7 @@ io.on('connection', (socket) => {
       if (user?.room !== 'Unknown') {
         clearInterval(intervalId);
         callback('success');
-        socket.emit('message', buildMsg(ADMIN, 'You can chat now, say hi!'));
+        //socket.emit('message', buildMsg(ADMIN, 'You can chat now, say hi!'));
       }
     }, 5000);
   });
