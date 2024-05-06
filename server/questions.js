@@ -1,10 +1,18 @@
+import { createHash } from 'crypto';
+import seedrandom from 'seedrandom';
+
 // Return 10 random questions array
-export function getRandomQuestions() {
+export function getRandomQuestions(roomName) {
+  const seed = createHash('md5').update(roomName).digest('hex');
+  seedrandom(seed);
   const randomQuestionArray = [];
 
-  for (let index = 0; index < 10; index++) {
-    const randomIndex = Math.floor(Math.random() * randomQuestionArray.length);
-    randomQuestionArray.push(questions[randomIndex]);
+  while (randomQuestionArray.length < 10) {
+    const randomIndex = Math.floor(Math.random() * questions.length);
+    const randomQuestion = questions[randomIndex];
+    if (!randomQuestionArray.includes(randomQuestion)) {
+      randomQuestionArray.push(randomQuestion);
+    }
   }
 
   return randomQuestionArray;

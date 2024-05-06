@@ -15,8 +15,8 @@
     "nodemon": "^3.1.0"
   },
   "dependencies": {
-    "cors": "^2.8.5",
     "express": "^4.19.2",
+    "seedrandom": "^3.0.5",
     "socket.io": "^4.7.5"
   }
 }

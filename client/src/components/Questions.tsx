@@ -1,23 +1,23 @@
-import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
-import { fetchQuestions } from '../lib/fetchQuestions';
-import Loading from './ui/Loading';
-import Error from './ui/Error';
 
 type QuestionsProps = {
   setIsReadyToChat: React.Dispatch<React.SetStateAction<boolean>>;
   socket: Socket;
 };
 
-// TODO fix API returning same questions
+type Tquestions = {
+  question: string;
+  answer1: string;
+  answer2: string;
+}[];
 
 export default function Questions({ setIsReadyToChat, socket }: QuestionsProps) {
   const [arrayState, setArrayState] = useState({
     currQuestion: 0,
     questions: [{}],
   });
-  const queryClient = useQueryClient();
+  const [questions, setQuestions] = useState<Tquestions>([]);
 
   function hUpdateAnswerProgress(question: string, answer: string) {
     if (arrayState.currQuestion < 9) {
@@ -30,19 +30,17 @@ export default function Questions({ setIsReadyToChat, socket }: QuestionsProps) 
     }
   }
 
-  const { status, data, error } = useQuery({
-    queryKey: ['questions'],
-    queryFn: fetchQuestions,
-  });
+  useEffect(() => {
+    socket.on('questions', (questions) => {
+      setQuestions(questions);
+    });
 
-  if (status === 'pending') {
-    return <Loading />;
-  }
+    return () => {
+      socket.off('questions');
+    };
+  }, []);
 
-  if (status === 'error') {
-    return <Error error={error} />;
-  }
-  console.log(data);
+  console.log(questions);
 
   return (
     <section className='h-[70vh] container'>
@@ -51,30 +49,30 @@ export default function Questions({ setIsReadyToChat, socket }: QuestionsProps) 
       </h1>
       <div className='border-2 mt-12 border-secondary rounded w-[50rem] mx-auto'>
         <h2 className='text-xl font-semibold py-8 text-center'>
-          {data![arrayState.currQuestion].question}
+          {questions[arrayState.currQuestion].question}
         </h2>
         <div className='flex justify-between'>
           <button
             onClick={() =>
               hUpdateAnswerProgress(
-                data![arrayState.currQuestion].question,
-                data![arrayState.currQuestion].answer1
+                questions[arrayState.currQuestion].question,
+                questions[arrayState.currQuestion].answer1
               )
             }
             className='text-center bg-primary w-full py-6 font-semibold border-t-2 border-secondary rounded-bl-sm hover:bg-secondary hover:text-primary duration-200'
           >
-            {data![arrayState.currQuestion].answer1}
+            {questions[arrayState.currQuestion].answer1}
           </button>
           <button
             onClick={() =>
               hUpdateAnswerProgress(
-                data![arrayState.currQuestion].question,
-                data![arrayState.currQuestion].answer2
+                questions[arrayState.currQuestion].question,
+                questions[arrayState.currQuestion].answer2
               )
             }
             className='text-center bg-primary w-full py-6 font-semibold border-t-2 border-l-2 border-secondary rounded-br-sm hover:bg-secondary hover:text-primary duration-200'
           >
-            {data![arrayState.currQuestion].answer2}
+            {questions[arrayState.currQuestion].answer2}
           </button>
         </div>
       </div>
