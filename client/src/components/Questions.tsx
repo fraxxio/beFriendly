@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
+import Loading from './ui/Loading';
+import ProgressIndicator from './ui/ProgressIndicator';
 
 type QuestionsProps = {
   setIsReadyToChat: React.Dispatch<React.SetStateAction<boolean>>;
   socket: Socket;
+  username: string;
 };
 
 type Tquestions = {
@@ -12,20 +15,36 @@ type Tquestions = {
   answer2: string;
 }[];
 
-export default function Questions({ setIsReadyToChat, socket }: QuestionsProps) {
+type Tprogress = {
+  question: string;
+  answer: string;
+}[];
+
+export default function Questions({ setIsReadyToChat, socket, username }: QuestionsProps) {
   const [arrayState, setArrayState] = useState({
     currQuestion: 0,
-    questions: [{}],
+    questions: Array.from({ length: 10 }, () => ({ question: '', answer: '' })),
   });
   const [questions, setQuestions] = useState<Tquestions>([]);
+  const [friendProgress, setFriendProgress] = useState<Tprogress>(
+    Array.from({ length: 10 }, () => ({ question: '', answer: '' }))
+  );
 
   function hUpdateAnswerProgress(question: string, answer: string) {
+    const updatedQuestions = arrayState.questions.map((item, index) =>
+      index === arrayState.currQuestion ? { question: question, answer: answer } : item
+    );
     if (arrayState.currQuestion < 9) {
-      setArrayState((prevState) => ({
-        currQuestion: prevState.currQuestion + 1,
-        questions: [...prevState.questions, { question: question, answer: answer }],
-      }));
+      setArrayState((prevState) => {
+        socket.emit('answerProgress', { array: updatedQuestions, username: username });
+
+        return {
+          currQuestion: prevState.currQuestion + 1,
+          questions: updatedQuestions,
+        };
+      });
     } else {
+      socket.emit('answerProgress', { array: updatedQuestions, username: username });
       setIsReadyToChat(true);
     }
   }
@@ -35,12 +54,21 @@ export default function Questions({ setIsReadyToChat, socket }: QuestionsProps) 
       setQuestions(questions);
     });
 
+    socket.on('answerProgress', (progress) => {
+      if (progress.username !== username) {
+        setFriendProgress(progress.array);
+      }
+    });
+
     return () => {
       socket.off('questions');
+      socket.off('answerProgress');
     };
   }, []);
 
-  console.log(questions);
+  if (questions.length === 0) {
+    return <Loading message='Loading questions...' />;
+  }
 
   return (
     <section className='h-[70vh] container'>
@@ -76,6 +104,8 @@ export default function Questions({ setIsReadyToChat, socket }: QuestionsProps) 
           </button>
         </div>
       </div>
+      <ProgressIndicator array={arrayState.questions} title='You' />
+      <ProgressIndicator array={friendProgress} title='Friend' />
     </section>
   );
 }

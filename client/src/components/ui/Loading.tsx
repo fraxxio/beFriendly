@@ -1,5 +1,13 @@
-import React from 'react';
+import { LoaderCircle } from 'lucide-react';
 
-export default function Loading() {
-  return <div>Loading</div>;
+type LoadingProps = {
+  message: string;
+};
+
+export default function Loading({ message }: LoadingProps) {
+  return (
+    <div className='w-full flex justify-center gap-2 text-xl font-semibold items-center'>
+      <LoaderCircle className='animate-spin' /> {message}
+    </div>
+  );
 }

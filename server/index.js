@@ -64,7 +64,10 @@ io.on('connection', (socket) => {
       if (user?.room !== 'Unknown') {
         clearInterval(intervalId);
         callback('success');
-        io.to(user?.room).emit('questions', getRandomQuestions(user?.room));
+        // Wait for component to render
+        setTimeout(() => {
+          io.to(user?.room).emit('questions', getRandomQuestions(user?.room));
+        }, 1000);
         //socket.emit('message', buildMsg(ADMIN, 'You can chat now, say hi!'));
       }
     }, 5000);
@@ -88,6 +91,14 @@ io.on('connection', (socket) => {
     const room = getUser(socket.id)?.room;
     if (room) {
       io.to(room).emit('message', buildMsg(name, text));
+    }
+  });
+
+  // Listening for answer progress
+  socket.on('answerProgress', (questions) => {
+    const room = getUser(socket.id)?.room;
+    if (room) {
+      io.to(room).emit('answerProgress', questions);
     }
   });
 

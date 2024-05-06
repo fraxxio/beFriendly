@@ -4,7 +4,7 @@ import seedrandom from 'seedrandom';
 // Return 10 random questions array
 export function getRandomQuestions(roomName) {
   const seed = createHash('md5').update(roomName).digest('hex');
-  seedrandom(seed);
+  Math.random = seedrandom(seed);
   const randomQuestionArray = [];
 
   while (randomQuestionArray.length < 10) {
