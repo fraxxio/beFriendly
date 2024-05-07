@@ -38,6 +38,7 @@ function App() {
             socket={socket}
             answers={arrayState.questions}
             friendAnswers={friendProgress}
+            setFriendProgress={setFriendProgress}
           />
         ) : (
           <Questions

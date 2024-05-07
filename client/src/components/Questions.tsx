@@ -40,7 +40,17 @@ export default function Questions({
         };
       });
     } else {
-      socket.emit('answerProgress', { array: updatedQuestions, username: usernames.username });
+      setArrayState((prevState) => {
+        socket.emit('answerProgress', {
+          array: updatedQuestions,
+          username: usernames.username,
+        });
+
+        return {
+          currQuestion: prevState.currQuestion + 1,
+          questions: updatedQuestions,
+        };
+      });
       setIsReadyToChat(true);
     }
   }

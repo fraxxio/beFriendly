@@ -2,7 +2,7 @@ import { SendHorizontal } from 'lucide-react';
 import { FormEvent, useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { Tusernames } from '../types/user';
-import { TarrayState, Tprogress } from '../types/questions';
+import { Tprogress } from '../types/questions';
 
 type Messages = {
   name: string;
@@ -14,13 +14,20 @@ type ChatProps = {
   socket: Socket;
   usernames: Tusernames;
   friendAnswers: Tprogress;
+  setFriendProgress: React.Dispatch<React.SetStateAction<Tprogress>>;
   answers: {
     question: string;
     answer: string;
   }[];
 };
 
-export default function Chat({ socket, usernames, friendAnswers, answers }: ChatProps) {
+export default function Chat({
+  socket,
+  usernames,
+  friendAnswers,
+  answers,
+  setFriendProgress,
+}: ChatProps) {
   const [messages, setMessages] = useState<Messages>([]);
   const [userInput, setUserInput] = useState('');
   const [activity, setActivity] = useState('');
@@ -53,6 +60,12 @@ export default function Chat({ socket, usernames, friendAnswers, answers }: Chat
       socket.emit('activity', usernames.username);
     });
 
+    socket.on('answerProgress', (progress) => {
+      if (progress.username !== usernames.username) {
+        setFriendProgress(progress.array);
+      }
+    });
+
     let activityTimer = 0;
     socket.on('activity', (name) => {
       setActivity(`${name} is typing...`);
@@ -70,8 +83,32 @@ export default function Chat({ socket, usernames, friendAnswers, answers }: Chat
   }, []);
   return (
     <section className='h-[70vh] container border-2 border-secondary rounded flex'>
-      <div className='w-[30%] border-r-2 border-secondary'>Answers to questions</div>
-      <div className='w-[70%] flex flex-col'>
+      <div className='w-[35%] border-r-2 border-secondary'>
+        <div className='flex border-b-2 border-secondary h-8'>
+          <p className='text-lg text-center border-r-2 border-secondary w-full bg-primary'>
+            {usernames.username} answers
+          </p>
+          <p className='text-lg text-center w-full bg-primary'>
+            {usernames.friendUsername} answers
+          </p>
+        </div>
+        <div className='max-h-[95%] overflow-y-scroll'>
+          {answers.map((element, index) => {
+            return (
+              <div className='border-b border-secondary border-opacity-20 last:border-b-0 py-2'>
+                <p className='py-1 px-2'>
+                  {index + 1}. {element.question}
+                </p>
+                <div className='flex text-center pt-2'>
+                  <p className='w-full'>{element.answer}</p>
+                  <p className='w-full'>{friendAnswers[index].answer}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className='w-[65%] flex flex-col'>
         <div className='grow relative'>
           {messages.map((msg) => {
             return (
