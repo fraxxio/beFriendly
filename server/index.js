@@ -12,6 +12,7 @@ import {
   pairAndJoinUsers,
   getRandomUsers,
   ADMIN,
+  getFriendName,
 } from './utils.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -61,9 +62,9 @@ io.on('connection', (socket) => {
 
     const intervalId = setInterval(() => {
       const user = getUser(socket.id);
-      if (user?.room !== 'Unknown') {
+      if (user?.room !== 'Unknown' && user) {
         clearInterval(intervalId);
-        callback('success');
+        callback({ result: 'success', friendName: getFriendName(user?.name, user?.room) });
         // Wait for component to render
         setTimeout(() => {
           io.to(user?.room).emit('questions', getRandomQuestions(user?.room));
@@ -76,7 +77,7 @@ io.on('connection', (socket) => {
   // When user disconnects to other user
   socket.on('disconnect', () => {
     const user = getUser(socket.id);
-    userLeavesApp(socket.id);
+    userLeavesApp(socket.id, lookingForFriendUsers);
 
     if (user) {
       io.to(user.room).emit('message', buildMsg(ADMIN, `${user.name} has left the room`));

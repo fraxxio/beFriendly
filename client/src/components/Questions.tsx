@@ -2,33 +2,29 @@ import { useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import Loading from './ui/Loading';
 import ProgressIndicator from './ui/ProgressIndicator';
+import { Tusernames } from '../types/user';
+import { TarrayState, Tprogress, Tquestions } from '../types/questions';
 
 type QuestionsProps = {
   setIsReadyToChat: React.Dispatch<React.SetStateAction<boolean>>;
   socket: Socket;
-  username: string;
+  usernames: Tusernames;
+  arrayState: TarrayState;
+  setArrayState: React.Dispatch<React.SetStateAction<TarrayState>>;
+  friendProgress: Tprogress;
+  setFriendProgress: React.Dispatch<React.SetStateAction<Tprogress>>;
 };
 
-type Tquestions = {
-  question: string;
-  answer1: string;
-  answer2: string;
-}[];
-
-type Tprogress = {
-  question: string;
-  answer: string;
-}[];
-
-export default function Questions({ setIsReadyToChat, socket, username }: QuestionsProps) {
-  const [arrayState, setArrayState] = useState({
-    currQuestion: 0,
-    questions: Array.from({ length: 10 }, () => ({ question: '', answer: '' })),
-  });
+export default function Questions({
+  setIsReadyToChat,
+  socket,
+  usernames,
+  arrayState,
+  setArrayState,
+  friendProgress,
+  setFriendProgress,
+}: QuestionsProps) {
   const [questions, setQuestions] = useState<Tquestions>([]);
-  const [friendProgress, setFriendProgress] = useState<Tprogress>(
-    Array.from({ length: 10 }, () => ({ question: '', answer: '' }))
-  );
 
   function hUpdateAnswerProgress(question: string, answer: string) {
     const updatedQuestions = arrayState.questions.map((item, index) =>
@@ -36,7 +32,7 @@ export default function Questions({ setIsReadyToChat, socket, username }: Questi
     );
     if (arrayState.currQuestion < 9) {
       setArrayState((prevState) => {
-        socket.emit('answerProgress', { array: updatedQuestions, username: username });
+        socket.emit('answerProgress', { array: updatedQuestions, username: usernames.username });
 
         return {
           currQuestion: prevState.currQuestion + 1,
@@ -44,7 +40,7 @@ export default function Questions({ setIsReadyToChat, socket, username }: Questi
         };
       });
     } else {
-      socket.emit('answerProgress', { array: updatedQuestions, username: username });
+      socket.emit('answerProgress', { array: updatedQuestions, username: usernames.username });
       setIsReadyToChat(true);
     }
   }
@@ -55,7 +51,7 @@ export default function Questions({ setIsReadyToChat, socket, username }: Questi
     });
 
     socket.on('answerProgress', (progress) => {
-      if (progress.username !== username) {
+      if (progress.username !== usernames.username) {
         setFriendProgress(progress.array);
       }
     });
@@ -104,8 +100,8 @@ export default function Questions({ setIsReadyToChat, socket, username }: Questi
           </button>
         </div>
       </div>
-      <ProgressIndicator array={arrayState.questions} title='You' />
-      <ProgressIndicator array={friendProgress} title='Friend' />
+      <ProgressIndicator array={arrayState.questions} title={usernames.username} />
+      <ProgressIndicator array={friendProgress} title={usernames.friendUsername} />
     </section>
   );
 }

@@ -37,8 +37,12 @@ export function updateUserRoom(id, newRoom) {
   UsersState.setUsers(updatedUsers);
 }
 
-export function userLeavesApp(id) {
+export function userLeavesApp(id, lookingForFriendUsers) {
   UsersState.setUsers(UsersState.users.filter((user) => user.id !== id));
+
+  const filteredUsers = lookingForFriendUsers.filter((user) => user !== id);
+  lookingForFriendUsers.length = 0;
+  lookingForFriendUsers.push(...filteredUsers);
 }
 
 export function getUser(id) {
@@ -46,7 +50,7 @@ export function getUser(id) {
 }
 
 export function pairAndJoinUsers(lookingForFriendUsers, io) {
-  console.log('count: ', lookingForFriendUsers.length);
+  console.log('Matchmaking count: ', lookingForFriendUsers.length);
   if (lookingForFriendUsers.length < 2) {
     return;
   }
@@ -59,7 +63,6 @@ export function pairAndJoinUsers(lookingForFriendUsers, io) {
 
   lookingForFriendUsers.length = 0;
   lookingForFriendUsers.push(...filteredUsers);
-  console.log(lookingForFriendUsers.length);
 
   const roomName = `Room_${user1Id}_${user2Id}`;
 
@@ -74,4 +77,9 @@ export function pairAndJoinUsers(lookingForFriendUsers, io) {
 export function getRandomUsers(userArray) {
   const shuffledArray = userArray.sort(() => Math.random() - 0.5);
   return shuffledArray.slice(0, 2);
+}
+
+export function getFriendName(userName, roomName) {
+  const usersInRoom = UsersState.users.filter((user) => user.room === roomName);
+  return usersInRoom[0].name === userName ? usersInRoom[1].name : usersInRoom[0].name;
 }

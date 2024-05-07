@@ -1,28 +1,37 @@
 import { Dispatch, FormEvent, useEffect, useState } from 'react';
 import { Search, User } from 'lucide-react';
 import { Socket } from 'socket.io-client';
+import { Tusernames } from '../types/user';
 
 type MainMenuProps = {
   setIsPaired: Dispatch<React.SetStateAction<boolean>>;
   socket: Socket;
-  username: string;
-  setUsername: Dispatch<React.SetStateAction<string>>;
+  usernames: Tusernames;
+  setUsernames: Dispatch<React.SetStateAction<Tusernames>>;
 };
 
-export default function MainMenu({ setIsPaired, socket, username, setUsername }: MainMenuProps) {
+export default function MainMenu({ setIsPaired, socket, usernames, setUsernames }: MainMenuProps) {
   const [userCount, setUserCount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
 
   function hSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setError(username.toLocaleLowerCase() === 'admin' ? true : false);
-    if (username.toLocaleLowerCase() === 'admin') return;
+    setError(usernames.username.toLocaleLowerCase() === 'admin' ? true : false);
+    if (usernames.username.toLocaleLowerCase() === 'admin') return;
 
     setLoading(true);
-    socket.emit('looking', username, (response: string) => {
-      setIsPaired(response === 'success' ? true : false);
-    });
+    socket.emit(
+      'looking',
+      usernames.username,
+      (response: { result: string; friendName: string }) => {
+        setUsernames((prevUsernames) => ({
+          ...prevUsernames,
+          friendUsername: response.friendName,
+        }));
+        setIsPaired(response.result === 'success' ? true : false);
+      }
+    );
   }
 
   useEffect(() => {
@@ -53,7 +62,13 @@ export default function MainMenu({ setIsPaired, socket, username, setUsername }:
             placeholder='John Doe'
             required
             disabled={loading}
-            onChange={(e: FormEvent<HTMLInputElement>) => setUsername(e.currentTarget.value)}
+            onChange={(e: FormEvent<HTMLInputElement>) => {
+              const { value } = e.currentTarget;
+              setUsernames((prevUsernames) => ({
+                ...prevUsernames,
+                username: value,
+              }));
+            }}
             className='py-2 pl-2 border-2 border-secondary rounded placeholder:text-gray-600 duration-200 focus:outline-primary'
           />
           {error && <p className='text-red-700 text-sm'>This username is not allowed.</p>}

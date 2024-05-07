@@ -1,6 +1,8 @@
 import { SendHorizontal } from 'lucide-react';
 import { FormEvent, useEffect, useState } from 'react';
 import { Socket } from 'socket.io-client';
+import { Tusernames } from '../types/user';
+import { TarrayState, Tprogress } from '../types/questions';
 
 type Messages = {
   name: string;
@@ -10,10 +12,15 @@ type Messages = {
 
 type ChatProps = {
   socket: Socket;
-  username: string;
+  usernames: Tusernames;
+  friendAnswers: Tprogress;
+  answers: {
+    question: string;
+    answer: string;
+  }[];
 };
 
-export default function Chat({ socket, username }: ChatProps) {
+export default function Chat({ socket, usernames, friendAnswers, answers }: ChatProps) {
   const [messages, setMessages] = useState<Messages>([]);
   const [userInput, setUserInput] = useState('');
   const [activity, setActivity] = useState('');
@@ -22,7 +29,7 @@ export default function Chat({ socket, username }: ChatProps) {
     e.preventDefault();
     if (userInput !== '') {
       socket.emit('message', {
-        name: username,
+        name: usernames.username,
         text: userInput,
       });
       setUserInput('');
@@ -43,7 +50,7 @@ export default function Chat({ socket, username }: ChatProps) {
     });
 
     msgInput.addEventListener('keypress', () => {
-      socket.emit('activity', username);
+      socket.emit('activity', usernames.username);
     });
 
     let activityTimer = 0;

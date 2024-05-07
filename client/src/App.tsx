@@ -5,11 +5,20 @@ import Navbar from './components/Navbar';
 import Chat from './components/Chat';
 import { socket } from './lib/socket';
 import Questions from './components/Questions';
+import { Tusernames } from './types/user';
+import { TarrayState, Tprogress } from './types/questions';
 
 function App() {
   const [isPaired, setIsPaired] = useState(false);
   const [isReadyToChat, setIsReadyToChat] = useState(false);
-  const [username, setUsername] = useState('');
+  const [usernames, setUsernames] = useState<Tusernames>({ username: '', friendUsername: '' });
+  const [friendProgress, setFriendProgress] = useState<Tprogress>(
+    Array.from({ length: 10 }, () => ({ question: '', answer: '' }))
+  );
+  const [arrayState, setArrayState] = useState<TarrayState>({
+    currQuestion: 0,
+    questions: Array.from({ length: 10 }, () => ({ question: '', answer: '' })),
+  });
 
   useEffect(() => {
     socket.connect();
@@ -24,16 +33,29 @@ function App() {
       <Navbar />
       {isPaired ? (
         isReadyToChat ? (
-          <Chat username={username} socket={socket} />
+          <Chat
+            usernames={usernames}
+            socket={socket}
+            answers={arrayState.questions}
+            friendAnswers={friendProgress}
+          />
         ) : (
-          <Questions username={username} setIsReadyToChat={setIsReadyToChat} socket={socket} />
+          <Questions
+            usernames={usernames}
+            setIsReadyToChat={setIsReadyToChat}
+            socket={socket}
+            arrayState={arrayState}
+            setArrayState={setArrayState}
+            friendProgress={friendProgress}
+            setFriendProgress={setFriendProgress}
+          />
         )
       ) : (
         <MainMenu
           socket={socket}
           setIsPaired={setIsPaired}
-          username={username}
-          setUsername={setUsername}
+          usernames={usernames}
+          setUsernames={setUsernames}
         />
       )}
       <Footer />
