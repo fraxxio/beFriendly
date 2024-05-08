@@ -16,14 +16,14 @@ export default function ProgressIndicator({ array, title }: ProgressIndicatorPro
           return question.answer ? (
             <div
               key={index}
-              className='bg-green-700 flex items-center w-full justify-center py-2 border-t border-l border-b last:border-r border-secondary'
+              className='bg-green-700 flex items-center w-full justify-center py-2 border-t border-l border-b last:border-r border-secondary first:rounded-tl first:rounded-bl last:rounded-tr last:rounded-br'
             >
               {index + 1} <Check size={18} />
             </div>
           ) : (
             <div
               key={index}
-              className='bg-gray-300 flex items-center w-full justify-center py-2 border-t border-l border-b last:border-r border-secondary'
+              className='bg-white flex items-center w-full justify-center py-2 border-t border-l border-b last:border-r border-secondary first:rounded-tl first:rounded-bl last:rounded-tr last:rounded-br'
             >
               {index + 1} <X size={18} />
             </div>

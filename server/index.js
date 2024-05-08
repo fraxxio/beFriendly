@@ -104,10 +104,10 @@ io.on('connection', (socket) => {
   });
 
   // Listen for activity
-  socket.on('activity', (name) => {
+  socket.on('activity', ({ name, key }) => {
     const room = getUser(socket.id)?.room;
     if (room) {
-      socket.broadcast.to(room).emit('activity', name);
+      socket.broadcast.to(room).emit('activity', { name: name, key: key });
     }
   });
 
