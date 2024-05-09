@@ -4,6 +4,8 @@ import Loading from './ui/Loading';
 import ProgressIndicator from './ui/ProgressIndicator';
 import { Tusernames } from '../types/user';
 import { TarrayState, Tprogress, Tquestions } from '../types/questions';
+import { useCountdown } from '../hooks/useCountdown';
+import { Timer } from 'lucide-react';
 
 type QuestionsProps = {
   setIsReadyToChat: React.Dispatch<React.SetStateAction<boolean>>;
@@ -13,6 +15,8 @@ type QuestionsProps = {
   setArrayState: React.Dispatch<React.SetStateAction<TarrayState>>;
   friendProgress: Tprogress;
   setFriendProgress: React.Dispatch<React.SetStateAction<Tprogress>>;
+  questions: Tquestions;
+  setQuestions: React.Dispatch<React.SetStateAction<Tquestions>>;
 };
 
 export default function Questions({
@@ -23,8 +27,10 @@ export default function Questions({
   setArrayState,
   friendProgress,
   setFriendProgress,
+  questions,
+  setQuestions,
 }: QuestionsProps) {
-  const [questions, setQuestions] = useState<Tquestions>([]);
+  const { minutes, seconds, isOver } = useCountdown(2 * 60, setIsReadyToChat);
 
   function hUpdateAnswerProgress(question: string, answer: string) {
     const updatedQuestions = arrayState.questions.map((item, index) =>
@@ -81,6 +87,16 @@ export default function Questions({
       <h1 className='text-center text-2xl font-semibold'>
         Answer these questions before the time runs out
       </h1>
+      {isOver ? (
+        <p className='text-center text-red-700 font-medium mt-8 text-xl'>Time is out!</p>
+      ) : (
+        <div className='flex justify-center items-center gap-2 mt-8 bg-primary border-secondary border-2 rounded max-w-fit px-2 py-1 mx-auto'>
+          <Timer size={20} />
+          <p className='text-xl font-medium'>
+            {minutes}:{seconds}
+          </p>
+        </div>
+      )}
       <div className='border-2 mt-12 border-secondary rounded w-[50rem] mx-auto'>
         <h2 className='text-xl font-semibold py-8 text-center'>
           {questions[arrayState.currQuestion].question}

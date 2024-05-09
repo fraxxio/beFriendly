@@ -2,7 +2,7 @@ import { SendHorizontal } from 'lucide-react';
 import { FormEvent, useEffect, useRef, useState } from 'react';
 import { Socket } from 'socket.io-client';
 import { Tusernames } from '../types/user';
-import { Tprogress } from '../types/questions';
+import { Tprogress, Tquestions } from '../types/questions';
 import Message from './ui/Message';
 
 type Messages = {
@@ -16,6 +16,7 @@ type ChatProps = {
   usernames: Tusernames;
   friendAnswers: Tprogress;
   setFriendProgress: React.Dispatch<React.SetStateAction<Tprogress>>;
+  questions: Tquestions;
   answers: {
     question: string;
     answer: string;
@@ -28,6 +29,7 @@ export default function Chat({
   friendAnswers,
   answers,
   setFriendProgress,
+  questions,
 }: ChatProps) {
   const [messages, setMessages] = useState<Messages>([]);
   const [userInput, setUserInput] = useState('');
@@ -104,18 +106,18 @@ export default function Chat({
             <p className='text-lg text-center w-full'>{usernames.friendUsername}</p>
           </div>
           <div className='max-h-full overflow-y-scroll'>
-            {answers.map((element, index) => {
+            {questions.map((question, index) => {
               return (
                 <div
                   key={index}
                   className='border-b border-secondary border-opacity-20 last:border-b-0 py-2'
                 >
                   <p className='py-1 px-2'>
-                    {index + 1}. {element.question}
+                    {index + 1}. {question.question}
                   </p>
                   <div className='flex text-center pt-2 items-center'>
-                    <p className='w-full'>{element.answer}</p>
-                    <p className='w-full'>{friendAnswers[index].answer}</p>
+                    <p className='w-full'>{answers[index].answer || '-'}</p>
+                    <p className='w-full'>{friendAnswers[index].answer || '-'}</p>
                   </div>
                 </div>
               );
