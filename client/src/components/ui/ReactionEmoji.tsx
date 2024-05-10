@@ -8,11 +8,17 @@ type ReactionEmojiProps = {
 
 export default function ReactionEmoji({ id }: ReactionEmojiProps) {
   const [isReactionMenuOpen, setIsReactionMenuOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (ref.current && !ref.current.contains(event.target as HTMLDivElement)) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as HTMLDivElement) &&
+        btnRef.current &&
+        !btnRef.current.contains(event.target as HTMLDivElement)
+      ) {
         setIsReactionMenuOpen(false);
       }
     };
@@ -33,13 +39,14 @@ export default function ReactionEmoji({ id }: ReactionEmojiProps) {
   return (
     <>
       <button
+        ref={btnRef}
         onClick={() => setIsReactionMenuOpen((prevState) => !prevState)}
         className={`btn text-gray-500 absolute top-[50%] -translate-y-1/2 duration-100 opacity-0 group-hover:opacity-100 -right-6`}
       >
         <SmilePlus size={18} />
       </button>
       <div
-        ref={ref}
+        ref={menuRef}
         className={`p-1 bg-white border rounded border-secondary border-opacity-25 max-w-[10rem] flex gap-1 flex-wrap absolute top-1/2 -translate-y-1/2 -right-48 
         ${isReactionMenuOpen ? 'block' : 'hidden'}`}
       >

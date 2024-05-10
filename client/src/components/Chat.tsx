@@ -4,6 +4,7 @@ import { Socket } from 'socket.io-client';
 import { Tusernames } from '../types/user';
 import { Tprogress, Tquestions } from '../types/questions';
 import Message from './ui/Message';
+import EmojiMenu from './ui/EmojiMenu';
 
 type Messages = {
   name: string;
@@ -172,14 +173,17 @@ export default function Chat({
             )}
           </div>
           <form className='flex' onSubmit={sendMessage}>
-            <input
-              type='text'
-              id='msgInput'
-              value={userInput}
-              placeholder='Say something...'
-              onChange={(e: FormEvent<HTMLInputElement>) => setUserInput(e.currentTarget.value)}
-              className='border-t-2 border-secondary w-full pl-4 py-2 focus:outline-none ring-inset focus:ring ring-primary duration-200'
-            />
+            <div className='relative w-full'>
+              <input
+                type='text'
+                id='msgInput'
+                value={userInput}
+                placeholder='Say something...'
+                onChange={(e: FormEvent<HTMLInputElement>) => setUserInput(e.currentTarget.value)}
+                className='border-t-2 border-secondary w-full px-4 py-2 focus:outline-none ring-inset focus:ring ring-primary duration-200'
+              />
+              <EmojiMenu setUserInput={setUserInput} />
+            </div>
             <button
               type='submit'
               className='px-4 bg-secondary text-primary hover:bg-primary hover:text-secondary duration-200 border-t-2 border-l-2 border-transparent hover:border-secondary'
