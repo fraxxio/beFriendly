@@ -22,6 +22,7 @@ function App() {
     currQuestion: 0,
     questions: Array.from({ length: 10 }, () => ({ question: '', answer: '' })),
   });
+  const userId = socket.id;
 
   useEffect(() => {
     socket.connect();
@@ -43,6 +44,7 @@ function App() {
             friendAnswers={friendProgress}
             setFriendProgress={setFriendProgress}
             questions={questions}
+            userId={userId}
           />
         ) : (
           <Questions

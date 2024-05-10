@@ -10,6 +10,7 @@ type Messages = {
   text: string;
   time: string;
   reaction: string;
+  userId: string;
 }[];
 
 type ChatProps = {
@@ -18,6 +19,7 @@ type ChatProps = {
   friendAnswers: Tprogress;
   setFriendProgress: React.Dispatch<React.SetStateAction<Tprogress>>;
   questions: Tquestions;
+  userId: string | undefined;
   answers: {
     question: string;
     answer: string;
@@ -31,6 +33,7 @@ export default function Chat({
   answers,
   setFriendProgress,
   questions,
+  userId,
 }: ChatProps) {
   const [messages, setMessages] = useState<Messages>([]);
   const [userInput, setUserInput] = useState('');
@@ -53,12 +56,13 @@ export default function Chat({
     const msgInput = document.querySelector('#msgInput') as HTMLInputElement;
 
     socket.on('message', (data) => {
-      const { name, text, time } = data;
+      const { name, text, time, id } = data;
       const newMessage = {
         name: name,
         text: text,
         time: time,
         reaction: '',
+        userId: id,
       };
       setMessages((prevMsg) => [...prevMsg, newMessage]);
     });
@@ -153,8 +157,11 @@ export default function Chat({
                   text={msg.text}
                   name={msg.name}
                   reaction={msg.reaction}
-                  isRightSide={msg.name === usernames.username}
-                  isRepeating={messages[index - 1]?.name === msg.name}
+                  isRightSide={msg.name === usernames.username && msg.userId === userId}
+                  isRepeating={
+                    messages[index - 1]?.name === msg.name &&
+                    messages[index - 1].userId === msg.userId
+                  }
                 />
               );
             })}
