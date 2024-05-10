@@ -9,6 +9,7 @@ type Messages = {
   name: string;
   text: string;
   time: string;
+  reaction: string;
 }[];
 
 type ChatProps = {
@@ -57,8 +58,23 @@ export default function Chat({
         name: name,
         text: text,
         time: time,
+        reaction: '',
       };
       setMessages((prevMsg) => [...prevMsg, newMessage]);
+    });
+
+    socket.on('addReaction', (data) => {
+      console.log('test: ', data.emoji);
+
+      const { id, emoji } = data;
+      setMessages((prevMsg) => {
+        return prevMsg.map((message, index) => {
+          if (index === id) {
+            return { ...message, reaction: message.reaction === emoji ? '' : emoji };
+          }
+          return message;
+        });
+      });
     });
 
     msgInput.addEventListener('keypress', (event: KeyboardEvent) => {
@@ -87,6 +103,8 @@ export default function Chat({
     return () => {
       socket.off('message');
       socket.off('activity');
+      socket.off('answerProgress');
+      socket.off('addReaction');
     };
   }, []);
 
@@ -130,9 +148,11 @@ export default function Chat({
               return (
                 <Message
                   key={index}
+                  id={index}
                   time={msg.time}
                   text={msg.text}
                   name={msg.name}
+                  reaction={msg.reaction}
                   isRightSide={msg.name === usernames.username}
                   isRepeating={messages[index - 1]?.name === msg.name}
                 />

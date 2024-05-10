@@ -67,9 +67,7 @@ export default function Questions({
     });
 
     socket.on('answerProgress', (progress) => {
-      if (progress.username !== usernames.username) {
-        setFriendProgress(progress.array);
-      }
+      setFriendProgress(progress.array);
     });
 
     return () => {

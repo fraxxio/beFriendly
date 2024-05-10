@@ -8,6 +8,8 @@ import Questions from './components/Questions';
 import { Tusernames } from './types/user';
 import { TarrayState, Tprogress, Tquestions } from './types/questions';
 
+// TODO same nickname causes message ui bugs
+
 function App() {
   const [isPaired, setIsPaired] = useState(false);
   const [isReadyToChat, setIsReadyToChat] = useState(false);

@@ -99,7 +99,7 @@ io.on('connection', (socket) => {
   socket.on('answerProgress', (questions) => {
     const room = getUser(socket.id)?.room;
     if (room) {
-      io.to(room).emit('answerProgress', questions);
+      socket.broadcast.to(room).emit('answerProgress', questions);
     }
   });
 
@@ -108,6 +108,14 @@ io.on('connection', (socket) => {
     const room = getUser(socket.id)?.room;
     if (room) {
       socket.broadcast.to(room).emit('activity', { name: name, key: key });
+    }
+  });
+
+  //Listen to adding reaction to message
+  socket.on('addReaction', ({ id, emoji }) => {
+    const room = getUser(socket.id)?.room;
+    if (room) {
+      io.to(room).emit('addReaction', { id, emoji });
     }
   });
 
