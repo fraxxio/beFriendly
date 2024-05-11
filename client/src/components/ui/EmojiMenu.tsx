@@ -233,13 +233,14 @@ export default function EmojiMenu({ setUserInput }: EmojiMenuProps) {
   return (
     <>
       <div
-        className={`border-t-2 p-1 overflow-auto border-secondary bg-white h-[7rem] absolute flex flex-wrap gap-1 -top-[267%] w-[110.6%] 
+        className={`border-t-2 p-1 overflow-auto border-secondary bg-white h-[7rem] absolute flex flex-wrap gap-1 -top-[267%] w-[100%] 
       ${isEmojiMenuOpen ? 'block' : 'hidden'}`}
         ref={menuRef}
       >
         {emojiList.map((emoji) => {
           return (
             <button
+              key={emoji}
               type='button'
               className='text-xl'
               onClick={() =>
@@ -256,7 +257,7 @@ export default function EmojiMenu({ setUserInput }: EmojiMenuProps) {
       <button
         ref={btnRef}
         onClick={() => setIsEmojiMenuOpen((prevState) => !prevState)}
-        className='absolute right-1 top-1/2 -translate-y-1/2 bg-white h-[65%] px-2 group'
+        className='z-10 absolute right-16 top-1/2 -translate-y-1/2 bg-white h-[65%] px-2 group'
         type='button'
       >
         <Smile className='group-hover:rotate-180 duration-200' />

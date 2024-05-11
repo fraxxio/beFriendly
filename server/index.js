@@ -88,10 +88,10 @@ io.on('connection', (socket) => {
   });
 
   // Listening for a message event
-  socket.on('message', ({ name, text }) => {
+  socket.on('message', ({ name, text, replyingTo }) => {
     const user = getUser(socket.id);
     if (user.room) {
-      io.to(user.room).emit('message', buildMsg(name, text, user.id));
+      io.to(user.room).emit('message', buildMsg(name, text, user.id, replyingTo));
     }
   });
 

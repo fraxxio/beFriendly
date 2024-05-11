@@ -5,14 +5,8 @@ import { Tusernames } from '../types/user';
 import { Tprogress, Tquestions } from '../types/questions';
 import Message from './ui/Message';
 import EmojiMenu from './ui/EmojiMenu';
-
-type Messages = {
-  name: string;
-  text: string;
-  time: string;
-  reaction: string;
-  userId: string;
-}[];
+import ReplyOverlay from './ui/ReplyOverlay';
+import { Messages } from '../types/messages';
 
 type ChatProps = {
   socket: Socket;
@@ -39,6 +33,7 @@ export default function Chat({
   const [messages, setMessages] = useState<Messages>([]);
   const [userInput, setUserInput] = useState('');
   const [activity, setActivity] = useState('');
+  const [reply, setReply] = useState(-1);
   const messageContainerRef = useRef<HTMLDivElement>(null);
 
   function sendMessage(e: FormEvent<HTMLFormElement>) {
@@ -47,8 +42,10 @@ export default function Chat({
       socket.emit('message', {
         name: usernames.username,
         text: userInput,
+        replyingTo: reply,
       });
       setUserInput('');
+      setReply(-1);
       socket.emit('activity', { name: usernames.username, key: 'Enter' });
     }
   }
@@ -57,13 +54,14 @@ export default function Chat({
     const msgInput = document.querySelector('#msgInput') as HTMLInputElement;
 
     socket.on('message', (data) => {
-      const { name, text, time, id } = data;
+      const { name, text, time, id, replyingTo } = data;
       const newMessage = {
         name: name,
         text: text,
         time: time,
         reaction: '',
         userId: id,
+        replyingTo: replyingTo,
       };
       setMessages((prevMsg) => [...prevMsg, newMessage]);
     });
@@ -161,8 +159,12 @@ export default function Chat({
                   isRightSide={msg.name === usernames.username && msg.userId === userId}
                   isRepeating={
                     messages[index - 1]?.name === msg.name &&
-                    messages[index - 1].userId === msg.userId
+                    messages[index - 1].userId === msg.userId &&
+                    msg.replyingTo < 0
                   }
+                  setReply={setReply}
+                  replyingTo={msg.replyingTo}
+                  replyMsg={msg.replyingTo >= 0 ? messages[msg.replyingTo] : null}
                 />
               );
             })}
@@ -172,7 +174,8 @@ export default function Chat({
               </p>
             )}
           </div>
-          <form className='flex' onSubmit={sendMessage}>
+          <form className='flex relative' onSubmit={sendMessage}>
+            <EmojiMenu setUserInput={setUserInput} />
             <div className='relative w-full'>
               <input
                 type='text'
@@ -182,7 +185,7 @@ export default function Chat({
                 onChange={(e: FormEvent<HTMLInputElement>) => setUserInput(e.currentTarget.value)}
                 className='border-t-2 border-secondary w-full px-4 py-2 focus:outline-none ring-inset focus:ring ring-primary duration-200'
               />
-              <EmojiMenu setUserInput={setUserInput} />
+              {reply >= 0 && <ReplyOverlay setReply={setReply} message={messages[reply]} />}
             </div>
             <button
               type='submit'

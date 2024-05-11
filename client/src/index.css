@@ -54,3 +54,9 @@ h5,
 h6 {
   overflow-wrap: break-word;
 }
+
+@layer utilities {
+  .gradient {
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.42) 0%, rgba(0, 0, 0, 0) 45%);
+  }
+}

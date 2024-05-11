@@ -47,7 +47,7 @@ export default function ReactionEmoji({ id }: ReactionEmojiProps) {
       </button>
       <div
         ref={menuRef}
-        className={`p-1 bg-white border rounded border-secondary border-opacity-25 max-w-[10rem] flex gap-1 flex-wrap absolute top-1/2 -translate-y-1/2 -right-48 
+        className={`p-1 bg-white border rounded border-secondary border-opacity-25 max-w-[10rem] flex gap-1 flex-wrap absolute top-1/2 -translate-y-1/2 -right-52 
         ${isReactionMenuOpen ? 'block' : 'hidden'}`}
       >
         {emojiList.map((emoji) => {

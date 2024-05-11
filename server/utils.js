@@ -7,11 +7,12 @@ const UsersState = {
   },
 };
 
-export function buildMsg(name, text, id) {
+export function buildMsg(name, text, id, replyingTo) {
   return {
     name,
     text,
     id,
+    replyingTo,
     time: new Intl.DateTimeFormat('default', {
       hour: 'numeric',
       minute: 'numeric',
