@@ -8,13 +8,12 @@ import Questions from './components/Questions';
 import { Tusernames } from './types/user';
 import { TarrayState, Tprogress, Tquestions } from './types/questions';
 
-// TODO same nickname causes message ui bugs
-
 function App() {
   const [isPaired, setIsPaired] = useState(false);
   const [isReadyToChat, setIsReadyToChat] = useState(false);
   const [usernames, setUsernames] = useState<Tusernames>({ username: '', friendUsername: '' });
   const [questions, setQuestions] = useState<Tquestions>([]);
+  const [isFriendReady, setIsFriendReady] = useState(false);
   const [friendProgress, setFriendProgress] = useState<Tprogress>(
     Array.from({ length: 10 }, () => ({ question: '', answer: '' }))
   );
@@ -45,6 +44,8 @@ function App() {
             setFriendProgress={setFriendProgress}
             questions={questions}
             userId={userId}
+            isFriendReady={isFriendReady}
+            setIsFriendReady={setIsFriendReady}
           />
         ) : (
           <Questions
@@ -57,6 +58,7 @@ function App() {
             setFriendProgress={setFriendProgress}
             questions={questions}
             setQuestions={setQuestions}
+            setIsFriendReady={setIsFriendReady}
           />
         )
       ) : (

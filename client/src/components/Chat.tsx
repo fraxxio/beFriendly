@@ -19,6 +19,8 @@ type ChatProps = {
     question: string;
     answer: string;
   }[];
+  isFriendReady: boolean;
+  setIsFriendReady: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function Chat({
@@ -29,8 +31,19 @@ export default function Chat({
   setFriendProgress,
   questions,
   userId,
+  isFriendReady,
+  setIsFriendReady,
 }: ChatProps) {
-  const [messages, setMessages] = useState<Messages>([]);
+  const [messages, setMessages] = useState<Messages>([
+    {
+      name: 'beFriendly',
+      text: 'Say hi to your new friend!',
+      time: '',
+      reaction: '',
+      userId: 'beFriendly_Admin',
+      replyingTo: -1,
+    },
+  ]);
   const [userInput, setUserInput] = useState('');
   const [activity, setActivity] = useState('');
   const [reply, setReply] = useState(-1);
@@ -90,6 +103,14 @@ export default function Chat({
       }
     });
 
+    socket.on('disconnected', () => {
+      setFriendProgress((prevState) => [...prevState, { question: 'disconnected', answer: '' }]);
+    });
+
+    socket.on('isReadyToChat', () => {
+      setIsFriendReady(true);
+    });
+
     let activityTimer = 0;
     socket.on('activity', ({ name, key }) => {
       if (key !== 'Enter') {
@@ -108,6 +129,8 @@ export default function Chat({
       socket.off('activity');
       socket.off('answerProgress');
       socket.off('addReaction');
+      socket.off('disconnected');
+      socket.off('isReadyToChat');
     };
   }, []);
 
@@ -122,7 +145,11 @@ export default function Chat({
       <div className='border-2 border-secondary rounded flex h-[80vh] max-[850px]:border-none max-[850px]:gap-20 max-[850px]:h-full max-[850px]:my-4 max-[850px]:flex-col-reverse'>
         <div className='w-[35%] border-r-2 border-secondary flex flex-col max-[850px]:w-full max-[850px]:border-2 max-[850px]:rounded'>
           <div className='flex border-b-2 border-secondary items-center bg-primary h-fit'>
-            <p className='text-lg text-center w-1/2 py-2 px-1'>{usernames.username}</p>
+            <p className='text-lg text-center w-1/2 py-2 px-1'>
+              {usernames.username}{' '}
+              {friendAnswers[friendAnswers.length - 1].question === 'disconnected' &&
+                '(Disconnected)'}
+            </p>
             <div className='border border-secondary h-full py-2'></div>
             <p className='text-lg text-center w-1/2 py-2 px-1'>{usernames.friendUsername}</p>
           </div>
@@ -184,7 +211,12 @@ export default function Chat({
                 type='text'
                 id='msgInput'
                 value={userInput}
-                placeholder='Say something...'
+                disabled={!isFriendReady}
+                placeholder={
+                  isFriendReady
+                    ? 'Say something...'
+                    : `${usernames.friendUsername} hasn't answered yet.`
+                }
                 onChange={(e: FormEvent<HTMLInputElement>) => setUserInput(e.currentTarget.value)}
                 className='border-t-2 border-secondary w-full px-4 py-2 focus:outline-none ring-inset focus:ring ring-primary duration-200'
               />

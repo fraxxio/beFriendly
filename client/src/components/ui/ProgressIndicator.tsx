@@ -8,6 +8,17 @@ type ProgressIndicatorProps = {
 };
 
 export default function ProgressIndicator({ array, title }: ProgressIndicatorProps) {
+  if (array[0].question === 'disconnected') {
+    return (
+      <div className='text-red-600 text-center pt-20'>
+        <b>{title}</b> has disconnected.{' '}
+        <a className='underline' href='/'>
+          Return to lobby to find new friend.
+        </a>
+      </div>
+    );
+  }
+
   return (
     <div className='max-[550px]:flex flex-col items-center'>
       <p className='text-center font-medium text-lg mt-20 max-[550px]:mt-8 max-[550px]:truncate max-[550px]:max-w-[30vw] pb-2'>

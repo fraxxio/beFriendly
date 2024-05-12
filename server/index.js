@@ -84,6 +84,7 @@ io.on('connection', (socket) => {
     }
     activeUserCount--;
     io.emit('activeUsers', { users: activeUserCount });
+    io.to(user?.room).emit('disconnected');
     console.log(`User ${socket.id} disconnected`);
   });
 
@@ -116,6 +117,14 @@ io.on('connection', (socket) => {
     const room = getUser(socket.id)?.room;
     if (room) {
       io.to(room).emit('addReaction', { id, emoji });
+    }
+  });
+
+  //Listen to user getting ready to chat
+  socket.on('isReadyToChat', () => {
+    const room = getUser(socket.id)?.room;
+    if (room) {
+      socket.broadcast.to(room).emit('isReadyToChat');
     }
   });
 

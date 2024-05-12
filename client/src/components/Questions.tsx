@@ -17,6 +17,7 @@ type QuestionsProps = {
   setFriendProgress: React.Dispatch<React.SetStateAction<Tprogress>>;
   questions: Tquestions;
   setQuestions: React.Dispatch<React.SetStateAction<Tquestions>>;
+  setIsFriendReady: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export default function Questions({
@@ -29,6 +30,7 @@ export default function Questions({
   setFriendProgress,
   questions,
   setQuestions,
+  setIsFriendReady,
 }: QuestionsProps) {
   const { minutes, seconds, isOver } = useCountdown(2 * 60, setIsReadyToChat);
 
@@ -57,7 +59,11 @@ export default function Questions({
           questions: updatedQuestions,
         };
       });
-      setIsReadyToChat(true);
+      socket.emit('isReadyToChat');
+      setIsReadyToChat(friendProgress[0].question === 'disconnected' ? false : true);
+      if (friendProgress[0].question === 'disconnected') {
+        window.location.reload();
+      }
     }
   }
 
@@ -70,9 +76,19 @@ export default function Questions({
       setFriendProgress(progress.array);
     });
 
+    socket.on('disconnected', () => {
+      setFriendProgress([{ question: 'disconnected', answer: '' }]);
+    });
+
+    socket.on('isReadyToChat', () => {
+      setIsFriendReady(true);
+    });
+
     return () => {
       socket.off('questions');
+      socket.off('disconnected');
       socket.off('answerProgress');
+      socket.off('isReadyToChat');
     };
   }, []);
 
