@@ -81,7 +81,7 @@ export default function Questions({
   }
 
   return (
-    <section className='h-[70vh] container'>
+    <section className='h-[70vh] container max-[550px]:mt-20 max-[550px]:h-fit mb-8'>
       <h1 className='text-center text-2xl font-semibold'>
         Answer these questions before the time runs out
       </h1>
@@ -95,8 +95,8 @@ export default function Questions({
           </p>
         </div>
       )}
-      <div className='border-2 mt-12 border-secondary rounded w-[50rem] mx-auto'>
-        <h2 className='text-xl font-semibold py-8 text-center'>
+      <div className='border-2 mt-12 border-secondary rounded w-[60%] mx-auto max-[830px]:w-[100%]'>
+        <h2 className='text-xl font-semibold py-8 px-2 text-center'>
           {questions[arrayState.currQuestion].question}
         </h2>
         <div className='flex justify-between'>
@@ -124,8 +124,10 @@ export default function Questions({
           </button>
         </div>
       </div>
-      <ProgressIndicator array={arrayState.questions} title={usernames.username} />
-      <ProgressIndicator array={friendProgress} title={usernames.friendUsername} />
+      <div className='max-[550px]:flex justify-between w-full gap-1'>
+        <ProgressIndicator array={arrayState.questions} title={usernames.username} />
+        <ProgressIndicator array={friendProgress} title={usernames.friendUsername} />
+      </div>
     </section>
   );
 }

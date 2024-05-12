@@ -42,7 +42,7 @@ export default function Message({
     const messageElement = document.getElementById(`message-${replyingToIndex}`);
     if (messageElement) {
       messageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      messageElement.classList.add('border-primary');
+      messageElement.classList.replace('border-secondary', 'border-primary');
       setTimeout(() => {
         messageElement.classList.replace('border-primary', 'border-secondary');
       }, 1500);

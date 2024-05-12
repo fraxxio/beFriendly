@@ -118,15 +118,15 @@ export default function Chat({
   }, [messages]);
 
   return (
-    <section className='container'>
-      <div className='border-2 border-secondary rounded flex h-[80vh]'>
-        <div className='w-[35%] border-r-2 border-secondary flex flex-col'>
+    <section className='container max-[850px]:mb-10'>
+      <div className='border-2 border-secondary rounded flex h-[80vh] max-[850px]:border-none max-[850px]:gap-20 max-[850px]:h-full max-[850px]:my-4 max-[850px]:flex-col-reverse'>
+        <div className='w-[35%] border-r-2 border-secondary flex flex-col max-[850px]:w-full max-[850px]:border-2 max-[850px]:rounded'>
           <div className='flex border-b-2 border-secondary items-center bg-primary h-fit'>
-            <p className='text-lg text-center w-full'>{usernames.username}</p>
-            <div className='border border-secondary h-full'></div>
-            <p className='text-lg text-center w-full'>{usernames.friendUsername}</p>
+            <p className='text-lg text-center w-1/2 py-2 px-1'>{usernames.username}</p>
+            <div className='border border-secondary h-full py-2'></div>
+            <p className='text-lg text-center w-1/2 py-2 px-1'>{usernames.friendUsername}</p>
           </div>
-          <div className='max-h-full overflow-y-scroll'>
+          <div className='max-h-full overflow-y-auto'>
             {questions.map((question, index) => {
               return (
                 <div
@@ -145,8 +145,11 @@ export default function Chat({
             })}
           </div>
         </div>
-        <div className='w-[65%] flex flex-col'>
-          <div className='grow relative p-4 overflow-auto' ref={messageContainerRef}>
+        <div className='w-[65%] flex flex-col max-[850px]:w-full max-[850px]:min-h-[80vh] max-[850px]:border-2 max-[850px]:border-secondary max-[850px]:rounded'>
+          <div
+            className='grow relative p-4 overflow-auto overflow-x-hidden'
+            ref={messageContainerRef}
+          >
             {messages.map((msg, index) => {
               return (
                 <Message
