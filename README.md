@@ -1,30 +1,154 @@
-# React + TypeScript + Vite
+<p align="center">
+<img alt="project" title="#About" width="150px" src=".client/public/LogoBanner.png" />
+</p>
+<h1 align="center">
+  <a href="#"> beFriendly | Find new friends in interactve way!</a>
+</h1>
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<p align="center">
 
-Currently, two official plugins are available:
+  <img alt="Stars" src="https://img.shields.io/github/stars/fraxxio/beFriendly?style=social">
+  
+  <a href="https://github.com/fraxxio/beFriendly.git">
+    <img alt="GitHub last commit" src="https://img.shields.io/github/last-commit/fraxxio/beFriendly">
+  </a>
+    
+  <img alt="License" src="https://img.shields.io/badge/license-MIT-brightgreen">
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+  <a href="https://github.com/fraxxio/">
+    <img alt="made by fraxx" src="https://img.shields.io/badge/Made_By-fraxx-blue">
+  </a>
+</p>
 
-## Expanding the ESLint configuration
+<p align="center">
+ <a href="#about">About</a> •
+ <a href="#features">Features</a> •
+ <a href="#tech-stack">Tech Stack</a> •  
+ <a href="#testing">Testing</a> •  
+ <a href="#license">License</a>
+</p>
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## About
 
-- Configure the top-level `parserOptions` property like this:
+**beFriendly is a web application developed using React and Express**, aimed at facilitating meaningful connections between users. Individuals can select their nicknames and enter a matchmaking pool to be paired with other random user. After getting paired users are prompted by set of 10 random questions about personality that need to be answered in 2 min., after answering pair can engage in dialogue within a dedicated chat room, with their answers displayd right next to the chat window.
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-};
+---
+
+## Features
+
+- [x] Matchmaking system for pairing users into chatrooms.
+- [x] Socket.io event listeners for handling user actions:
+  - [x] Connect / Disconnect.
+  - [x] Activity in chat.
+  - [x] Answering progress.
+  - [x] Sending messages.
+- [x] Full chatting experience with modern features:
+  - [x] Adding reactions to messages.
+  - [x] Replying to other messages.
+  - [x] Emoji selection menu.
+
+---
+
+## Tech Stack
+
+The following tools were used for creating the project:
+
+#### **Platform** [React](https://react.dev/) and [Express](https://expressjs.com/)
+
+Deployed on **[Google Cloud Run](https://cloud.google.com/run)** with **[Docker](https://www.docker.com/)**.
+
+- **[Tailwind CSS](https://tailwindcss.com/)**
+- **[Lucide Icons](https://lucide.dev/icons/)**
+- **[Socket.io](https://socket.io/)**
+- **[Artillery](https://www.artillery.io/)**
+
+> See the file (CLIENT) [package.json](https://github.com/fraxxio/beFriendly/blob/master/client/package.json)
+> See the file (SERVER) [package.json](https://github.com/fraxxio/beFriendly/blob/master/server/package.json)
+
+---
+
+## Testing
+
+Express.js server was load tested with Artillery.
+
+<p align="center">
+<img alt="Testing" title="#Testing" width="150px" src=".client/public/Tests.png" />
+</p>
+
+To run tests yourself:
+
+```bash
+
+# Access the tests folder in your terminal
+$ cd beFriendly/server/tests
+
+# Run the test
+$ npx artillery run load.test.yml
+
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+---
+
+### Pre-requisites
+
+Before you begin, you will need to have the following tools installed or set up:
+
+- [Git](https://git-scm.com)
+- [Node.js](https://nodejs.org/en/)
+- [Npm](https://www.npmjs.com/)
+- [Docker](https://www.docker.com/)
+
+#### Running the web application in Docker
+
+```bash
+
+# Clone this repository
+$ git clone https://github.com/fraxxio/beFriendly.git
+
+# Access the project folder in your terminal
+$ cd beFriendly
+
+# Build Docker container
+$ docker build -t befriendly .
+
+# Run the application in Docker
+$ docker run -p 3500:3500 befriendly
+
+# The application will open on the port: 3500 - go to http://localhost:3500
+
+```
+
+#### Running the web application separately
+
+```bash
+
+# Clone this repository
+$ git clone https://github.com/fraxxio/beFriendly.git
+
+# Access the client project folder in your terminal
+$ cd beFriendly/client
+
+# Install the dependencies
+$ npm install
+
+# Run the application in development mode
+$ npm run dev
+
+# Access the server project folder in your terminal
+$ cd ../server
+
+# Install the dependencies
+$ npm install
+
+# Run the application in development mode
+$ npm run dev
+
+# The application will open on the port: 3500 - go to http://localhost:3500
+
+```
+
+---
+
+## License
+
+This project is under the MIT license.
