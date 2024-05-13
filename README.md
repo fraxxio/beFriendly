@@ -1,5 +1,5 @@
 <p align="center">
-<img alt="project" title="#About" width="150px" src=".client/public/LogoBanner.png" />
+<img alt="project" title="#About" width="150px" src="/client/public/LogoBanner.png" />
 </p>
 <h1 align="center">
   <a href="#"> beFriendly | Find new friends in interactve way!</a>
@@ -63,6 +63,7 @@ Deployed on **[Google Cloud Run](https://cloud.google.com/run)** with **[Docker]
 - **[Artillery](https://www.artillery.io/)**
 
 > See the file (CLIENT) [package.json](https://github.com/fraxxio/beFriendly/blob/master/client/package.json)
+
 > See the file (SERVER) [package.json](https://github.com/fraxxio/beFriendly/blob/master/server/package.json)
 
 ---
@@ -72,7 +73,7 @@ Deployed on **[Google Cloud Run](https://cloud.google.com/run)** with **[Docker]
 Express.js server was load tested with Artillery.
 
 <p align="center">
-<img alt="Testing" title="#Testing" width="150px" src=".client/public/Tests.png" />
+<img alt="Testing" title="#Testing" width="700px" src="/client/public/Tests.png" />
 </p>
 
 To run tests yourself:
