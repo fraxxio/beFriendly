@@ -6,11 +6,9 @@ import { fileURLToPath } from 'url';
 import {
   buildMsg,
   activateUser,
-  updateUserRoom,
   userLeavesApp,
   getUser,
   pairAndJoinUsers,
-  getRandomUsers,
   ADMIN,
   getFriendName,
 } from './utils.js';
@@ -41,8 +39,8 @@ const io = new Server(expressServer, {
 });
 
 io.on('connection', (socket) => {
-  console.log(`User ${socket.id} connected`);
   activeUserCount++;
+  console.log(`User ${socket.id} connected. Users: ${activeUserCount}`);
 
   socket.on('looking', (name, callback) => {
     if (!name || name === 'Admin') {
@@ -69,7 +67,6 @@ io.on('connection', (socket) => {
         setTimeout(() => {
           io.to(user?.room).emit('questions', getRandomQuestions(user?.room));
         }, 1000);
-        //socket.emit('message', buildMsg(ADMIN, 'You can chat now, say hi!'));
       }
     }, 5000);
   });
@@ -85,7 +82,7 @@ io.on('connection', (socket) => {
     activeUserCount--;
     io.emit('activeUsers', { users: activeUserCount });
     io.to(user?.room).emit('disconnected');
-    console.log(`User ${socket.id} disconnected`);
+    console.log(`User ${socket.id} disconnected. Users: ${activeUserCount}`);
   });
 
   // Listening for a message event
@@ -104,7 +101,7 @@ io.on('connection', (socket) => {
     }
   });
 
-  // Listen for activity
+  // Listen for chat activity
   socket.on('activity', ({ name, key }) => {
     const room = getUser(socket.id)?.room;
     if (room) {

@@ -1,0 +1,60 @@
+config:
+  target: 'http://localhost:3500'
+  ensure:
+    max: 500 # fail if max response time exceeds 500ms
+    maxErrorRate: 1 # fail if error rate exceeds 1%
+  phases:
+    - duration: 120
+      arrivalRate: 10
+      rampTo: 20
+      name: 'Warm up phase'
+    - duration: 60
+      arrivalRate: 20
+      name: 'Sustained max load'
+  engines:
+    socketio: {}
+
+scenarios:
+  - name: Load test scenario
+    engine: socketio
+    flow:
+      # wait for the WebSocket upgrade (optional)
+      - think: 1
+
+      # joining matchmaking
+      - emit:
+          channel: 'looking'
+          data: 'UserName'
+
+      # emit the "answerProgress" event 10 times
+      - loop:
+          - emit:
+              channel: 'answerProgress'
+              data: 'Random question'
+        count: 10
+
+      # send 5 messages with a one-second delay between iterations
+      - loop:
+          - emit:
+              channel: 'message'
+              data:
+                name: 'UserName1'
+                text: 'Hello world'
+                replyingTo: -1
+          - think: 1
+        count: 5
+
+      - think: 15
+
+      # send 10 messages
+      - loop:
+          - emit:
+              channel: 'message'
+              data:
+                name: 'UserName1'
+                text: 'Hello world'
+                replyingTo: -1
+          - think: 1
+        count: 10
+
+      - think: 5
