@@ -111,7 +111,7 @@ export default function Chat({
       setIsFriendReady(true);
     });
 
-    let activityTimer = 0;
+    let activityTimer: ReturnType<typeof setTimeout>;
     socket.on('activity', ({ name, key }) => {
       if (key !== 'Enter') {
         setActivity(`${name} is typing...`);
