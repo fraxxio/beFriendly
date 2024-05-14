@@ -2,7 +2,7 @@
 <img alt="project" title="#About" width="150px" src="/client/public/LogoBanner.png" />
 </p>
 <h1 align="center">
-  <a href="#"> beFriendly | Find new friends in interactve way!</a>
+  <a href="#"> beFriendly | Find new friends in an interactive way!</a>
 </h1>
 
 <p align="center">
@@ -30,7 +30,7 @@
 
 ## About
 
-**beFriendly is a web application developed using React and Express**, aimed at facilitating meaningful connections between users. Individuals can select their nicknames and enter a matchmaking pool to be paired with other random user. After getting paired users are prompted by set of 10 random questions about personality that need to be answered in 2 min., after answering pair can engage in dialogue within a dedicated chat room, with their answers displayd right next to the chat window.
+**beFriendly is a web application developed using React and Express** aimed at facilitating meaningful connections between users. Individuals can select their nicknames and enter a matchmaking pool to be paired with other random users. After getting paired, users are prompted by a set of 10 random questions about personality that need to be answered in 2 minutes. After answering, pairs can engage in dialogue within a dedicated chat room, with their answers displayed right next to the chat window.
 
 ---
 
@@ -70,7 +70,7 @@ Deployed on **[Google Cloud Run](https://cloud.google.com/run)** with **[Docker]
 
 ## Testing
 
-Express.js server was load tested with Artillery.
+Express.js server was load tested with _Artillery_.
 
 <p align="center">
 <img alt="Testing" title="#Testing" width="700px" src="/client/public/Tests.png" />
