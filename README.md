@@ -59,7 +59,7 @@ The following tools were used for creating the project:
 
 #### **Platform** [React](https://react.dev/) and [Express](https://expressjs.com/)
 
-Deployed on **[Google Cloud Run](https://cloud.google.com/run)** with **[Docker](https://www.docker.com/)**.
+Deployed on **[Render](https://render.com/)** with **[Docker](https://www.docker.com/)**.
 
 - **[Tailwind CSS](https://tailwindcss.com/)**
 - **[Lucide Icons](https://lucide.dev/icons/)**
