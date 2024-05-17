@@ -2,11 +2,11 @@
 <img alt="project" title="#About" width="150px" src="/client/public/LogoBanner.png" />
 </p>
 <h1 align="center">
-  <a href="https://befriendly.onrender.com"> beFriendly | Find new friends in an interactive way!</a>
+  <a href="https://befriendly.devrokas.com"> beFriendly | Find new friends in an interactive way!</a>
 </h1>
 
 <p align="center">
-<a href="https://befriendly.onrender.com"> https://befriendly.onrender.com</a>
+<a href="https://befriendly.devrokas.com">https://befriendly.devrokas.com</a>
 </p>
 
 <p align="center">
